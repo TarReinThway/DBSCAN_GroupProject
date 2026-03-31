@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Make Moons</h2>
+<p class="subtitle">Synthetic crescent-shaped dataset</p>
+
+<div class="cluster-wrapper">
+
+    <form action="/moon" method="POST" class="param-form">
+
+        <div class="param-section-label">Dataset Parameters</div>
+        <div class="param-grid">
+            <div class="param-group">
+                <label for="n_samples">n_samples</label>
+                <input type="number" name="n_samples" id="n_samples" step="100" min="200" max="3000"
+                       value="{{ n_samples }}" required>
+            </div>
+            <div class="param-group">
+                <label for="noise">noise</label>
+                <input type="number" name="noise" id="noise" step="0.01" min="0.01" max="0.4"
+                       value="{{ noise }}" required>
+            </div>
+        </div>
+
+        <div class="param-section-label">DBSCAN Parameters</div>
+        <div class="param-grid">
+            <div class="param-group">
+                <label for="eps">eps</label>
+                <input type="number" name="eps" id="eps" step="0.05" min="0.05" max="2.0"
+                       value="{{ eps }}" required>
+            </div>
+            <div class="param-group">
+                <label for="min_samples">min_samples</label>
+                <input type="number" name="min_samples" id="min_samples" step="1" min="2" max="20"
+                       value="{{ min_samples }}" required>
+            </div>
+        </div>
+
+        <div class="param-section-label">K-Means Parameters</div>
+        <div class="param-grid">
+            <div class="param-group">
+                <label for="n_clusters">n_clusters</label>
+                <input type="number" name="n_clusters" id="n_clusters" step="1" min="2" max="10"
+                       value="{{ n_clusters }}" required>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-run">Run Clustering</button>
+
+    </form>
+
+    {% if stats %}
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="stat-label">DBSCAN Clusters</div>
+            <div class="stat-value">{{ stats.dbscan_clusters }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Noise Points</div>
+            <div class="stat-value noise">{{ stats.noise_points }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">K-Means Clusters</div>
+            <div class="stat-value">{{ stats.kmeans_clusters }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Total Points</div>
+            <div class="stat-value muted">{{ stats.total_points }}</div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if stats %}
+    <div class="silhouette-row">
+        <div class="sil-card">
+            <div class="sil-label">DBSCAN — Silhouette Score</div>
+            <div class="sil-value">{{ stats.sil_dbscan }}</div>
+        </div>
+        <div class="sil-card">
+            <div class="sil-label">K-Means — Silhouette Score</div>
+            <div class="sil-value">{{ stats.sil_kmeans }}</div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if dbscan_img and kmeans_img %}
+    <div class="plots-grid">
+        <div class="plot-card">
+            <div class="plot-label">DBSCAN</div>
+            <img src="data:image/png;base64,{{ dbscan_img }}" alt="DBSCAN plot">
+        </div>
+        <div class="plot-card">
+            <div class="plot-label">K-Means</div>
+            <img src="data:image/png;base64,{{ kmeans_img }}" alt="K-Means plot">
+        </div>
+    </div>
+    {% else %}
+    <div class="plot-placeholder">
+        <p>Set your parameters above and click <strong>Run Clustering</strong> to generate plots.</p>
+    </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}
